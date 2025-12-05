@@ -33,3 +33,20 @@ export function validateOrderTotal(
   return Math.abs(orderTotal - calculatedTotal) < 0.01;
 }
 
+/**
+ * 주문 상태를 한국어로 변환
+ *
+ * @param status - 주문 상태
+ * @returns 한국어 상태명
+ */
+export function formatOrderStatus(status: string): string {
+  const statusMap: Record<string, string> = {
+    pending: "주문 대기",
+    confirmed: "주문 확인",
+    shipped: "배송 중",
+    delivered: "배송 완료",
+    cancelled: "주문 취소",
+  };
+  return statusMap[status] || status;
+}
+

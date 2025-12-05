@@ -41,7 +41,17 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
       }
     } catch (error) {
       console.error("Add to cart error:", error);
-      alert("장바구니에 추가하는 중 오류가 발생했습니다.");
+
+      // 네트워크 에러나 Server Action 에러 처리
+      if (error instanceof Error) {
+        if (error.message.includes('fetch')) {
+          alert("네트워크 연결을 확인해주세요.");
+        } else {
+          alert(`오류: ${error.message}`);
+        }
+      } else {
+        alert("장바구니에 추가하는 중 오류가 발생했습니다.");
+      }
     } finally {
       setIsAdding(false);
     }

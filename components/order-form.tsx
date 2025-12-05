@@ -24,7 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import type { ShippingAddress } from "@/types/order";
+import type { ShippingAddress, CreateOrderInput } from "@/types/order";
 
 const orderFormSchema = z.object({
   name: z.string().min(1, "이름을 입력해주세요."),
@@ -41,10 +41,7 @@ const orderFormSchema = z.object({
 type OrderFormValues = z.infer<typeof orderFormSchema>;
 
 interface OrderFormProps {
-  onSubmit: (data: {
-    shippingAddress: ShippingAddress;
-    orderNote?: string | null;
-  }) => Promise<void>;
+  onSubmit: (data: CreateOrderInput) => Promise<void>;
   isSubmitting?: boolean;
 }
 

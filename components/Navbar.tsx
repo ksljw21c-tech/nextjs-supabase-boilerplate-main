@@ -17,6 +17,9 @@ const Navbar = () => {
           </SignInButton>
         </SignedOut>
         <SignedIn>
+          <Link href="/my-orders">
+            <Button variant="ghost">주문내역</Button>
+          </Link>
           <CartIcon />
           <UserButton />
         </SignedIn>

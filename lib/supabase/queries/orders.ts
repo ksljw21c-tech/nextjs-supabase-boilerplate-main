@@ -43,12 +43,19 @@ export async function createOrder(
   clerkId: string,
   input: CreateOrderInput
 ): Promise<Order> {
+  console.log("createOrder: Starting order creation for user:", clerkId);
+  console.log("createOrder: Input:", input);
+
   const supabase = await createClient();
+  console.log("createOrder: Supabase client created");
 
   // 1. 장바구니 아이템 조회
+  console.log("createOrder: Fetching cart items for user:", clerkId);
   const cartItems = await getCartItems(clerkId);
+  console.log("createOrder: Cart items found:", cartItems.length);
 
   if (cartItems.length === 0) {
+    console.log("createOrder: Cart is empty");
     throw new Error("장바구니가 비어있습니다.");
   }
 
@@ -207,20 +214,145 @@ export async function getOrderById(
  * @param clerkId - Clerk 사용자 ID
  * @returns 주문 목록
  */
-export async function getUserOrders(clerkId: string): Promise<Order[]> {
+export async function getUserOrders(clerkId: string): Promise<OrderWithItems[]> {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
-    .from("orders")
-    .select("*")
-    .eq("clerk_id", clerkId)
-    .order("created_at", { ascending: false });
+  try {
+    console.log("getUserOrders: Starting for clerkId:", clerkId);
 
-  if (error) {
-    console.error("Error fetching user orders:", error);
-    throw new Error(`Failed to fetch user orders: ${error.message}`);
+    // orders 테이블 존재 여부 확인
+    console.log("getUserOrders: Checking if orders table exists");
+
+    const { error: testError } = await supabase
+      .from("orders")
+      .select("count", { count: "exact", head: true })
+      .limit(1);
+
+    if (testError && testError.message.includes("Could not find the table")) {
+      console.log("getUserOrders: Orders table does not exist!");
+      console.log("getUserOrders: CRITICAL ERROR - Database tables not found!");
+      console.log("getUserOrders: SOLUTION: Run SQL from supabase/migrations/db.sql in Supabase Dashboard");
+      console.log("getUserOrders: URL: https://supabase.com/dashboard/project/xziygeoviztifdjioain");
+      console.log("getUserOrders: 1. Go to SQL Editor");
+      console.log("getUserOrders: 2. New Query");
+      console.log("getUserOrders: 3. Copy and paste the entire content from db.sql");
+      console.log("getUserOrders: 4. Click Run");
+
+      // 빈 배열 반환하여 앱이 계속 작동하도록 함
+      return [];
+    }
+
+    // orders 테이블 조회
+    console.log("getUserOrders: Fetching orders for clerkId:", clerkId);
+    const { data: ordersData, error: ordersError } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("clerk_id", clerkId)
+      .order("created_at", { ascending: false });
+
+    if (ordersError) {
+      console.error("Error fetching orders:", ordersError);
+      throw new Error(`Failed to fetch orders: ${ordersError.message}`);
+    }
+
+    if (!ordersData || ordersData.length === 0) {
+      console.log("getUserOrders: No orders found");
+      return [];
+    }
+
+    console.log("getUserOrders: Found orders count:", ordersData.length);
+
+    // 각 order에 대해 order_items를 조회
+    const ordersWithItems: OrderWithItems[] = await Promise.all(
+      ordersData.map(async (order: any) => {
+        try {
+          const { data: itemsData, error: itemsError } = await supabase
+            .from("order_items")
+            .select("id, order_id, product_id, product_name, quantity, price, created_at")
+            .eq("order_id", order.id);
+
+          if (itemsError) {
+            console.error("Error fetching items for order:", order.id, itemsError);
+            // items 조회 실패 시 빈 배열로 처리
+            return {
+              id: order.id,
+              clerk_id: order.clerk_id,
+              total_amount: order.total_amount,
+              status: order.status,
+              shipping_address: order.shipping_address,
+              order_note: order.order_note,
+              created_at: order.created_at,
+              updated_at: order.updated_at,
+              items: [],
+            };
+          }
+
+          return {
+            id: order.id,
+            clerk_id: order.clerk_id,
+            total_amount: order.total_amount,
+            status: order.status,
+            shipping_address: order.shipping_address,
+            order_note: order.order_note,
+            created_at: order.created_at,
+            updated_at: order.updated_at,
+            items: itemsData || [],
+          };
+        } catch (itemError) {
+          console.error("Error processing order items for order:", order.id, itemError);
+          return {
+            id: order.id,
+            clerk_id: order.clerk_id,
+            total_amount: order.total_amount,
+            status: order.status,
+            shipping_address: order.shipping_address,
+            order_note: order.order_note,
+            created_at: order.created_at,
+            updated_at: order.updated_at,
+            items: [],
+          };
+        }
+      })
+    );
+
+    console.log("getUserOrders: Successfully processed orders with items");
+    return ordersWithItems;
+  } catch (error) {
+    console.error("Error in getUserOrders:", error);
+    throw error;
   }
+}
 
-  return (data || []) as Order[];
+/**
+ * 주문 상태를 업데이트합니다.
+ * @param orderId 주문 ID
+ * @param status 새로운 주문 상태
+ * @returns 성공 여부
+ */
+export async function updateOrderStatus(
+  orderId: string,
+  status: Order["status"]
+): Promise<{ success: boolean; message?: string }> {
+  try {
+    const supabase = await createClient();
+
+    const { error } = await supabase
+      .from("orders")
+      .update({
+        status,
+        updated_at: new Date().toISOString()
+      })
+      .eq("id", orderId);
+
+    if (error) {
+      console.error("Error updating order status:", error);
+      return { success: false, message: "Failed to update order status." };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update order status:", error);
+    return { success: false, message: "Internal server error." };
+  }
 }
 

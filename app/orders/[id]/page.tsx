@@ -57,14 +57,21 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
       <main className="min-h-[calc(100vh-80px)] px-4 py-8 md:px-8 md:py-12">
         <div className="w-full max-w-4xl mx-auto">
           <div className="mb-8">
-            <Link href="/">
-              <Button variant="outline" size="sm" className="mb-4">
-                ← 홈으로 돌아가기
-              </Button>
-            </Link>
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">주문 완료</h1>
+            <div className="flex gap-4 mb-4">
+              <Link href="/my-orders">
+                <Button variant="outline" size="sm">
+                  ← 주문 내역으로 돌아가기
+                </Button>
+              </Link>
+              <Link href="/">
+                <Button variant="outline" size="sm">
+                  홈으로 가기
+                </Button>
+              </Link>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">주문 상세</h1>
             <p className="text-gray-600 dark:text-gray-400">
-              주문이 성공적으로 완료되었습니다
+              주문 번호: {order.id}
             </p>
           </div>
 
@@ -100,21 +107,36 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
             {/* 주문 상품 목록 */}
             <div className="bg-white dark:bg-gray-800 border rounded-lg p-6">
               <h2 className="text-xl font-semibold mb-4">주문 상품</h2>
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {order.items.map((item) => (
                   <div
                     key={item.id}
-                    className="flex justify-between items-start p-3 border rounded-lg"
+                    className="flex gap-4 p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                   >
-                    <div className="flex-1">
-                      <p className="font-medium">{item.product_name}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                    {/* 상품 이미지 플레이스홀더 */}
+                    <div className="flex-shrink-0 w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                      <span className="text-2xl">📦</span>
+                    </div>
+
+                    {/* 상품 정보 */}
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-lg mb-1">
+                        {item.product_name}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                         {formatPrice(item.price)} × {item.quantity}개
                       </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-500">
+                        상품 ID: {item.product_id}
+                      </p>
                     </div>
-                    <p className="font-semibold">
-                      {formatPrice(item.price * item.quantity)}
-                    </p>
+
+                    {/* 가격 */}
+                    <div className="flex-shrink-0 text-right">
+                      <p className="font-bold text-lg">
+                        {formatPrice(item.price * item.quantity)}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>

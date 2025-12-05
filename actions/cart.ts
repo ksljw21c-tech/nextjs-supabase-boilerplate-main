@@ -9,11 +9,12 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
+import { createClient } from "@/lib/supabase/server";
 import {
   getCartItems,
-  addToCart as addToCartQuery,
-  updateCartItem as updateCartItemQuery,
-  removeFromCart as removeFromCartQuery,
+  addToCart,
+  updateCartItem,
+  removeFromCart,
 } from "@/lib/supabase/queries/cart";
 import type { CartItemWithProduct } from "@/types/cart";
 
@@ -52,17 +53,22 @@ export async function addToCartAction(
   quantity: number = 1
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    // 입력 검증
+    if (!productId || typeof productId !== 'string') {
+      return { success: false, error: "유효하지 않은 상품 ID입니다." };
+    }
+
+    if (quantity <= 0 || !Number.isInteger(quantity)) {
+      return { success: false, error: "수량은 1개 이상의 정수여야 합니다." };
+    }
+
     const { userId } = await auth();
 
     if (!userId) {
       return { success: false, error: "로그인이 필요합니다." };
     }
 
-    if (quantity <= 0) {
-      return { success: false, error: "수량은 1개 이상이어야 합니다." };
-    }
-
-    await addToCartQuery(userId, productId, quantity);
+    await addToCart(userId, productId, quantity);
 
     return { success: true };
   } catch (error) {
@@ -89,17 +95,22 @@ export async function updateCartItemAction(
   quantity: number
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    // 입력 검증
+    if (!cartItemId || typeof cartItemId !== 'string') {
+      return { success: false, error: "유효하지 않은 장바구니 아이템 ID입니다." };
+    }
+
+    if (quantity <= 0 || !Number.isInteger(quantity)) {
+      return { success: false, error: "수량은 1개 이상의 정수여야 합니다." };
+    }
+
     const { userId } = await auth();
 
     if (!userId) {
       return { success: false, error: "로그인이 필요합니다." };
     }
 
-    if (quantity <= 0) {
-      return { success: false, error: "수량은 1개 이상이어야 합니다." };
-    }
-
-    await updateCartItemQuery(cartItemId, quantity);
+    await updateCartItem(cartItemId, quantity);
 
     return { success: true };
   } catch (error) {
@@ -124,13 +135,18 @@ export async function removeFromCartAction(
   cartItemId: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    // 입력 검증
+    if (!cartItemId || typeof cartItemId !== 'string') {
+      return { success: false, error: "유효하지 않은 장바구니 아이템 ID입니다." };
+    }
+
     const { userId } = await auth();
 
     if (!userId) {
       return { success: false, error: "로그인이 필요합니다." };
     }
 
-    await removeFromCartQuery(cartItemId);
+    await removeFromCart(cartItemId);
 
     return { success: true };
   } catch (error) {
