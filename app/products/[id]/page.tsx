@@ -12,6 +12,7 @@ import { formatPrice, getStockStatus } from "@/types/product";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import AddToCartButton from "@/components/add-to-cart-button";
 
 interface ProductDetailPageProps {
   params: Promise<{
@@ -98,20 +99,14 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
               <div className="space-y-4 pt-6 border-t">
                 <div className="flex gap-3">
-                  <Button
-                    className="flex-1"
-                    disabled={stockStatus === "품절"}
-                    size="lg"
-                  >
-                    {stockStatus === "품절" ? "품절" : "장바구니에 담기"}
-                  </Button>
-                  <Button variant="outline" size="lg">
+                  <AddToCartButton product={product} />
+                  <Button variant="outline" size="lg" disabled>
                     찜하기
                   </Button>
                 </div>
 
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  * 장바구니 및 찜하기 기능은 추후 구현 예정입니다.
+                  * 찜하기 기능은 추후 구현 예정입니다.
                 </p>
               </div>
 

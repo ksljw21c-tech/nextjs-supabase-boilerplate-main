@@ -2,6 +2,7 @@ import { SignedOut, SignInButton, SignedIn, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import React from "react";
 import { Button } from "@/components/ui/button";
+import CartIcon from "@/components/cart-icon";
 
 const Navbar = () => {
   return (
@@ -16,6 +17,7 @@ const Navbar = () => {
           </SignInButton>
         </SignedOut>
         <SignedIn>
+          <CartIcon />
           <UserButton />
         </SignedIn>
       </div>
