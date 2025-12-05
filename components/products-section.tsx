@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import ProductGrid from "@/components/product-grid";
 import CategoryFilter from "@/components/category-filter";
 import Pagination from "@/components/pagination";
+import { ProductGridSkeleton, LoadingCard } from "@/components/loading";
 
 interface ProductsSectionProps {
   category?: string;
@@ -22,6 +23,7 @@ export default function ProductsSection({ category, page }: ProductsSectionProps
   const [categories, setCategories] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -37,14 +39,24 @@ export default function ProductsSection({ category, page }: ProductsSectionProps
         }
 
         const data = await response.json();
-        setProducts(data.products);
-        setCategories(data.categories);
-        setTotalPages(data.totalPages);
+        setProducts(data.products || []);
+        setCategories(data.categories || []);
+        setTotalPages(data.totalPages || 0);
+        setError(null);
       } catch (error) {
         console.error("Failed to load products:", error);
         setProducts([]);
         setCategories([]);
         setTotalPages(0);
+
+        // 네트워크 에러인지 데이터베이스 에러인지 구분
+        if (error instanceof TypeError && error.message.includes("fetch")) {
+          setError("네트워크 연결을 확인해주세요.");
+        } else if (error instanceof Error && error.message.includes("500")) {
+          setError("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        } else {
+          setError("상품 데이터를 불러오는 중 오류가 발생했습니다.");
+        }
       } finally {
         setLoading(false);
       }
@@ -61,10 +73,28 @@ export default function ProductsSection({ category, page }: ProductsSectionProps
             <div key={i} className="h-9 w-20 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse" />
           ))}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="bg-gray-200 dark:bg-gray-700 rounded-lg aspect-square animate-pulse" />
-          ))}
+        <ProductGridSkeleton />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg p-8 max-w-md mx-auto">
+          <div className="text-6xl mb-4">❌</div>
+          <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-4">
+            데이터를 불러올 수 없습니다
+          </h3>
+          <p className="text-red-700 dark:text-red-300 mb-6">
+            {error}
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            다시 시도
+          </button>
         </div>
       </div>
     );

@@ -7,6 +7,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getProducts, getProductCategories } from "@/lib/supabase/queries/products";
+import { isValidProduct } from "@/lib/utils/validation";
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,7 +17,7 @@ export async function GET(request: NextRequest) {
     const limit = 12;
 
     // 상품 데이터와 카테고리 데이터를 동시에 가져옴
-    const [{ products, totalPages }, categories] = await Promise.all([
+    const [{ products: rawProducts, totalPages }, categories] = await Promise.all([
       getProducts({
         category: category || null,
         page,
@@ -26,6 +27,14 @@ export async function GET(request: NextRequest) {
       }),
       getProductCategories()
     ]);
+
+    // 상품 데이터 유효성 검증 및 필터링
+    const products = rawProducts.filter(isValidProduct);
+
+    // 유효하지 않은 상품이 있었다면 로그 기록
+    if (products.length !== rawProducts.length) {
+      console.warn(`Filtered out ${rawProducts.length - products.length} invalid products`);
+    }
 
     return NextResponse.json({
       products,

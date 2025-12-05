@@ -45,7 +45,7 @@ export default function OrderList({ orders }: OrderListProps) {
               <p className="mb-2">2. Supabase Dashboard 열기:</p>
               <p className="mb-2 font-mono text-xs break-all">https://supabase.com/dashboard/project/xziygeoviztifdjioain</p>
               <p className="mb-2">3. SQL Editor → New Query → 붙여넣기 → Run</p>
-              <p className="text-green-600 dark:text-green-400 font-semibold">4. "Success" 나오면 새로고침!</p>
+              <p className="text-green-600 dark:text-green-400 font-semibold">4. &quot;Success&quot; 나오면 새로고침!</p>
             </div>
           </div>
           <Link href="/">

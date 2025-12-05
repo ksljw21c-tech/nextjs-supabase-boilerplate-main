@@ -129,47 +129,66 @@ export async function getOrderByIdAction(
  * @returns 주문 목록
  */
 export async function getUserOrdersAction(): Promise<OrderWithItems[]> {
+  console.log("getUserOrdersAction: ===== STARTING =====");
+
   try {
-    console.log("getUserOrdersAction: Starting...");
+    console.log("getUserOrdersAction: Checking authentication...");
 
     const { userId } = await auth();
-    console.log("getUserOrdersAction: Auth result - userId:", userId ? "present" : "null");
+    console.log("getUserOrdersAction: Auth result - userId:", userId ? `${userId.substring(0, 8)}...` : "null");
 
     if (!userId) {
       console.log("getUserOrdersAction: User not authenticated, returning empty array");
       return [];
     }
 
-    console.log("getUserOrdersAction: Fetching orders for user:", userId);
+    console.log("getUserOrdersAction: Fetching orders for user...");
 
-    // 데이터베이스 연결 상태 확인을 위한 간단한 쿼리
     try {
       const orders = await getUserOrders(userId);
-      console.log("getUserOrdersAction: Successfully fetched orders count:", orders.length);
+      console.log("getUserOrdersAction: ✅ Successfully fetched orders count:", orders.length);
+      console.log("getUserOrdersAction: ===== SUCCESS =====");
       return orders;
     } catch (dbError) {
-      console.error("getUserOrdersAction: Database error:", dbError);
-      console.error("getUserOrdersAction: Database error details:", dbError instanceof Error ? dbError.message : dbError);
+      console.error("getUserOrdersAction: ❌ Database error occurred:", dbError);
+      console.error("getUserOrdersAction: Error type:", typeof dbError);
+      console.error("getUserOrdersAction: Error details:", dbError instanceof Error ? dbError.message : String(dbError));
 
       // 데이터베이스 에러인 경우 빈 배열 반환
-      if (dbError instanceof Error && (
-        dbError.message.includes("relation") ||
-        dbError.message.includes("does not exist") ||
-        dbError.message.includes("schema cache") ||
-        dbError.message.includes("Could not find the table")
-      )) {
-        console.log("getUserOrdersAction: Database table issue detected, returning empty array");
-        console.log("getUserOrdersAction: Please run the database migration SQL in Supabase Dashboard");
-        return [];
+      if (dbError instanceof Error) {
+        const errorMessage = dbError.message;
+        if (
+          errorMessage.includes("relation") ||
+          errorMessage.includes("does not exist") ||
+          errorMessage.includes("schema cache") ||
+          errorMessage.includes("Could not find the table") ||
+          errorMessage.includes("orders")
+        ) {
+          console.log("getUserOrdersAction: 🔧 Database table issue detected, returning empty array");
+          console.log("getUserOrdersAction: 💡 SOLUTION: Run SQL from supabase/migrations/db.sql in Supabase Dashboard");
+          console.log("getUserOrdersAction: ===== HANDLED ERROR =====");
+          return [];
+        }
       }
 
-      throw dbError; // 다른 에러는 다시 던짐
+      // 다른 데이터베이스 에러도 빈 배열로 처리
+      console.log("getUserOrdersAction: 🔧 Unknown database error, returning empty array to prevent app crash");
+      console.log("getUserOrdersAction: ===== HANDLED ERROR =====");
+      return [];
     }
   } catch (error) {
-    console.error("getUserOrdersAction: Unexpected error:", error);
+    // 모든 예외 상황을 하나의 catch 블록에서 처리
+    console.error("getUserOrdersAction: ❌ Unexpected error:", error);
     console.error("getUserOrdersAction: Error stack:", error instanceof Error ? error.stack : "No stack");
 
-    // 어떤 에러든 빈 배열을 반환하여 앱이 계속 작동하도록 함
+    // 인증 에러인지 확인
+    if (error instanceof Error && error.message.includes("auth")) {
+      console.log("getUserOrdersAction: 🔧 Auth error detected, returning empty array");
+    } else {
+      console.log("getUserOrdersAction: 🔧 General error, returning empty array to prevent app crash");
+    }
+
+    console.log("getUserOrdersAction: ===== HANDLED ERROR =====");
     return [];
   }
 }
