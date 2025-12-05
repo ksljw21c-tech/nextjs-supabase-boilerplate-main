@@ -304,6 +304,37 @@ pnpm start
 pnpm lint
 ```
 
+## 배포
+
+### Vercel CLI로 배포
+
+이 프로젝트는 Vercel CLI를 사용하여 배포할 수 있습니다.
+
+**빠른 배포:**
+
+```bash
+# 1. Vercel CLI 설치 (한 번만)
+pnpm add -g vercel
+
+# 2. Vercel 로그인
+vercel login
+
+# 3. 프로젝트 배포
+vercel
+
+# 4. 프로덕션 배포
+vercel --prod
+```
+
+**환경 변수 설정:**
+
+배포 전에 Vercel 대시보드에서 다음 환경 변수들을 설정해야 합니다:
+
+- Clerk: `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` 등
+- Supabase: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` 등
+
+자세한 배포 가이드는 [`docs/VERCEL_DEPLOYMENT.md`](docs/VERCEL_DEPLOYMENT.md)를 참고하세요.
+
 ## 추가 설정 및 팁
 
 ### Clerk 한국어 설정

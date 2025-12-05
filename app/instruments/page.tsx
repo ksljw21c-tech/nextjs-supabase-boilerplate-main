@@ -14,8 +14,6 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { Suspense } from "react";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 
 async function InstrumentsData() {
   // Supabase 공식 문서 패턴: await createClient()

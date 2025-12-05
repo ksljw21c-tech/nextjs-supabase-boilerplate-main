@@ -1,4 +1,4 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { auth } from "@clerk/nextjs/server";
 
 /**
@@ -47,7 +47,7 @@ export async function createClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-  return createClient(supabaseUrl, supabaseKey, {
+  return createSupabaseClient(supabaseUrl, supabaseKey, {
     async accessToken() {
       // Clerk 세션 토큰을 Supabase에 전달
       // Supabase가 이 토큰을 검증하고 auth.jwt()->>'sub'로 접근 가능
@@ -65,7 +65,7 @@ export function createClerkSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-  return createClient(supabaseUrl, supabaseKey, {
+  return createSupabaseClient(supabaseUrl, supabaseKey, {
     async accessToken() {
       return (await auth()).getToken();
     },

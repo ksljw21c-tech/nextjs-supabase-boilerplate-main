@@ -4,6 +4,7 @@
 ├── CLERK_SUPABASE_INTEGRATION.md
 ├── SUPABASE_NEXTJS_SETUP.md
 ├── TODO.md
+├── VERCEL_DEPLOYMENT.md
 ├── app
 │   ├── api
 │   │   └── sync-user
