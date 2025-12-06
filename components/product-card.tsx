@@ -84,9 +84,15 @@ export default function ProductCard({ product, className }: ProductCardProps) {
         "group relative flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02]",
         className
       )}
+      aria-label={`${product.name} 상품 상세 보기, 가격 ${product.price.toLocaleString()}원, ${getCategoryLabel(product.category)} 카테고리`}
     >
       {/* 이미지 영역 */}
       <div className="relative w-full aspect-square bg-gray-100 dark:bg-gray-700 overflow-hidden">
+        <img
+          src="/placeholder-product.jpg"
+          alt={`${product.name} 상품 이미지`}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
         {/* 플레이스홀더 이미지 */}
         <div className="absolute inset-0 flex items-center justify-center">
           <Package className="w-16 h-16 text-gray-400 dark:text-gray-500" />

@@ -80,8 +80,13 @@ export default function CartSidebar({ children }: CartSidebarProps) {
               <p className="text-gray-600 dark:text-gray-400 mb-4">
                 장바구니가 비어있습니다.
               </p>
+              <p className="text-sm text-gray-500 dark:text-gray-500 mb-6">
+                상품을 장바구니에 담아보세요
+              </p>
               <Link href="/">
-                <Button onClick={() => setIsOpen(false)}>상품 둘러보기</Button>
+                <Button onClick={() => setIsOpen(false)} className="w-full">
+                  상품 둘러보기
+                </Button>
               </Link>
             </div>
           ) : (

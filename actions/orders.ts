@@ -14,7 +14,8 @@ import {
   getOrderById,
   getUserOrders,
 } from "@/lib/supabase/queries/orders";
-import type { Order, OrderWithItems, CreateOrderInput } from "@/types/order";
+import { CreateOrderRequestSchema } from "@/lib/schemas/order";
+import type { OrderWithItems } from "@/types/order";
 
 /**
  * 주문 생성
@@ -29,7 +30,7 @@ export async function createOrderAction(
       phone: string;
       postalCode: string;
       address: string;
-      detailAddress: string;
+      detailAddress?: string;
     };
     orderNote?: string | null;
   }
@@ -37,6 +38,19 @@ export async function createOrderAction(
   console.log("createOrderAction called with input:", input);
 
   try {
+    // Zod 스키마로 입력 검증
+    const validationResult = CreateOrderRequestSchema.safeParse(input);
+
+    if (!validationResult.success) {
+      const errorMessages = validationResult.error.errors
+        .map(err => `${err.path.join(".")}: ${err.message}`)
+        .join(", ");
+      console.log("Validation failed:", errorMessages);
+      return { success: false, error: `입력값 오류: ${errorMessages}` };
+    }
+
+    const validatedData = validationResult.data;
+
     console.log("Getting user authentication...");
     const { userId } = await auth();
     console.log("User ID:", userId);
@@ -46,33 +60,17 @@ export async function createOrderAction(
       return { success: false, error: "로그인이 필요합니다." };
     }
 
-    // 필수 필드 검증
-    if (!input.shippingAddress.name) {
-      return { success: false, error: "이름을 입력해주세요." };
-    }
-    if (!input.shippingAddress.phone) {
-      return { success: false, error: "전화번호를 입력해주세요." };
-    }
-    if (!input.shippingAddress.postalCode) {
-      return { success: false, error: "우편번호를 입력해주세요." };
-    }
-    if (!input.shippingAddress.address) {
-      return { success: false, error: "주소를 입력해주세요." };
-    }
-    if (!input.shippingAddress.detailAddress) {
-      return { success: false, error: "상세주소를 입력해주세요." };
-    }
-
     // CreateOrderInput 형식으로 변환
+    // Zod 검증을 통과했으므로 필수 필드가 존재함을 보장
     const createOrderInput = {
       shippingAddress: {
-        name: input.shippingAddress.name,
-        phone: input.shippingAddress.phone,
-        postalCode: input.shippingAddress.postalCode,
-        address: input.shippingAddress.address,
-        detailAddress: input.shippingAddress.detailAddress,
+        name: validatedData.shippingAddress.name,
+        phone: validatedData.shippingAddress.phone,
+        postalCode: validatedData.shippingAddress.postalCode,
+        address: validatedData.shippingAddress.address,
+        detailAddress: validatedData.shippingAddress.detailAddress || "",
       },
-      orderNote: input.orderNote,
+      orderNote: validatedData.orderNote || null,
     };
 
     console.log("Calling createOrder with userId:", userId);
@@ -129,7 +127,7 @@ export async function getOrderByIdAction(
  * @returns 주문 목록
  */
 export async function getUserOrdersAction(): Promise<OrderWithItems[]> {
-  console.log("getUserOrdersAction: ===== STARTING =====");
+  console.log("🚀 getUserOrdersAction: ===== STARTING =====");
 
   try {
     console.log("getUserOrdersAction: Checking authentication...");

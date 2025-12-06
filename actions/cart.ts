@@ -16,6 +16,7 @@ import {
   updateCartItem,
   removeFromCart,
 } from "@/lib/supabase/queries/cart";
+import { AddToCartRequestSchema, UpdateCartItemRequestSchema } from "@/lib/schemas/cart";
 import type { CartItemWithProduct } from "@/types/cart";
 
 /**
@@ -53,14 +54,20 @@ export async function addToCartAction(
   quantity: number = 1
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    // 입력 검증
-    if (!productId || typeof productId !== 'string') {
-      return { success: false, error: "유효하지 않은 상품 ID입니다." };
+    // Zod 스키마로 입력 검증
+    const validationResult = AddToCartRequestSchema.safeParse({
+      product_id: productId,
+      quantity,
+    });
+
+    if (!validationResult.success) {
+      const errorMessage = validationResult.error.errors
+        .map(err => err.message)
+        .join(", ");
+      return { success: false, error: `입력값 오류: ${errorMessage}` };
     }
 
-    if (quantity <= 0 || !Number.isInteger(quantity)) {
-      return { success: false, error: "수량은 1개 이상의 정수여야 합니다." };
-    }
+    const validatedData = validationResult.data;
 
     const { userId } = await auth();
 
@@ -68,7 +75,7 @@ export async function addToCartAction(
       return { success: false, error: "로그인이 필요합니다." };
     }
 
-    await addToCart(userId, productId, quantity);
+    await addToCart(userId, validatedData.product_id, validatedData.quantity);
 
     return { success: true };
   } catch (error) {
@@ -95,13 +102,18 @@ export async function updateCartItemAction(
   quantity: number
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    // 입력 검증
+    // cartItemId 검증
     if (!cartItemId || typeof cartItemId !== 'string') {
       return { success: false, error: "유효하지 않은 장바구니 아이템 ID입니다." };
     }
 
-    if (quantity <= 0 || !Number.isInteger(quantity)) {
-      return { success: false, error: "수량은 1개 이상의 정수여야 합니다." };
+    // Zod 스키마로 수량 검증
+    const quantityValidation = UpdateCartItemRequestSchema.safeParse({ quantity });
+    if (!quantityValidation.success) {
+      const errorMessage = quantityValidation.error.errors
+        .map(err => err.message)
+        .join(", ");
+      return { success: false, error: `수량 오류: ${errorMessage}` };
     }
 
     const { userId } = await auth();

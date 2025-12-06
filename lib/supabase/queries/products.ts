@@ -43,8 +43,9 @@ export async function getProducts(
     sortOrder = "desc",
   } = options;
 
+  let supabase;
   try {
-    const supabase = await createClient();
+    supabase = await createClient();
   } catch (clientError) {
     console.error("Failed to create Supabase client:", clientError);
     return {
@@ -55,8 +56,6 @@ export async function getProducts(
       totalPages: 0,
     };
   }
-
-  const supabase = await createClient();
 
   // 기본 쿼리: 활성화된 상품만 조회
   let query = supabase
@@ -143,14 +142,13 @@ export async function getProducts(
  * ```
  */
 export async function getProductCategories(): Promise<string[]> {
+  let supabase;
   try {
-    const supabase = await createClient();
+    supabase = await createClient();
   } catch (clientError) {
     console.error("Failed to create Supabase client:", clientError);
     return [];
   }
-
-  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("products")
@@ -207,14 +205,13 @@ export async function getProductCategories(): Promise<string[]> {
 export async function getProductById(
   productId: string
 ): Promise<Product | null> {
+  let supabase;
   try {
-    const supabase = await createClient();
+    supabase = await createClient();
   } catch (clientError) {
     console.error("Failed to create Supabase client:", clientError);
     return null;
   }
-
-  const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("products")

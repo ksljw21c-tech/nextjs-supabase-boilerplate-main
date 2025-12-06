@@ -11,6 +11,7 @@ import { formatOrderStatus } from "@/lib/utils/order";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyOrders } from "@/components/empty-state";
 import type { OrderWithItems } from "@/types/order";
 
 interface OrderListProps {
@@ -31,27 +32,8 @@ function getStatusVariant(status: OrderWithItems["status"]): "default" | "second
 export default function OrderList({ orders }: OrderListProps) {
   if (orders.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-12 max-w-md mx-auto">
-          <div className="text-6xl mb-4">📦</div>
-          <h2 className="text-xl font-semibold mb-2">주문 내역이 없습니다</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
-            아직 주문한 상품이 없거나 데이터베이스가 설정되지 않았습니다.
-          </p>
-          <div className="text-sm text-gray-500 mb-6 space-y-2">
-            <p className="font-semibold text-red-600 dark:text-red-400">🚨 데이터베이스 설정 필요:</p>
-            <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded text-left">
-              <p className="mb-2">1. 메모장에서 열린 <code className="bg-gray-200 px-1 rounded">db.sql</code> 파일 전체 복사</p>
-              <p className="mb-2">2. Supabase Dashboard 열기:</p>
-              <p className="mb-2 font-mono text-xs break-all">https://supabase.com/dashboard/project/xziygeoviztifdjioain</p>
-              <p className="mb-2">3. SQL Editor → New Query → 붙여넣기 → Run</p>
-              <p className="text-green-600 dark:text-green-400 font-semibold">4. &quot;Success&quot; 나오면 새로고침!</p>
-            </div>
-          </div>
-          <Link href="/">
-            <Button>상품 둘러보기</Button>
-          </Link>
-        </div>
+      <div className="border dark:border-gray-700 rounded-lg">
+        <EmptyOrders />
       </div>
     );
   }

@@ -10,8 +10,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getCartItems } from "@/lib/supabase/queries/cart";
 import CartItem from "@/components/cart-item";
 import CartSummary from "@/components/cart-summary";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { EmptyCart } from "@/components/empty-state";
 
 export default async function CartPage() {
   const { userId } = await auth();
@@ -33,17 +32,8 @@ export default async function CartPage() {
         </div>
 
         {cartItems.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-12 max-w-md mx-auto">
-              <div className="text-6xl mb-4">🛒</div>
-              <h2 className="text-xl font-semibold mb-2">장바구니가 비어있습니다</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
-                상품을 장바구니에 담아보세요
-              </p>
-              <Link href="/">
-                <Button>상품 둘러보기</Button>
-              </Link>
-            </div>
+          <div className="border dark:border-gray-700 rounded-lg">
+            <EmptyCart />
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

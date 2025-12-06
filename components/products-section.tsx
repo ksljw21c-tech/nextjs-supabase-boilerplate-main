@@ -11,7 +11,8 @@ import { useEffect, useState } from "react";
 import ProductGrid from "@/components/product-grid";
 import CategoryFilter from "@/components/category-filter";
 import Pagination from "@/components/pagination";
-import { ProductGridSkeleton, LoadingCard } from "@/components/loading";
+import { ProductGridSkeleton } from "@/components/loading";
+import { EmptyProducts, EmptyCategoryProducts, LoadError } from "@/components/empty-state";
 
 interface ProductsSectionProps {
   category?: string;
@@ -35,7 +36,14 @@ export default function ProductsSection({ category, page }: ProductsSectionProps
 
         const response = await fetch(`/api/products?${params}`);
         if (!response.ok) {
-          throw new Error("Failed to fetch products");
+          const errorText = await response.text();
+          console.error("API Error Response:", {
+            status: response.status,
+            statusText: response.statusText,
+            body: errorText,
+            url: `/api/products?${params}`
+          });
+          throw new Error(`Failed to fetch products: ${response.status} ${response.statusText} - ${errorText}`);
         }
 
         const data = await response.json();
@@ -78,42 +86,37 @@ export default function ProductsSection({ category, page }: ProductsSectionProps
     );
   }
 
+  // 데이터 다시 불러오기 함수
+  const handleRetry = () => {
+    window.location.reload();
+  };
+
   if (error) {
     return (
-      <div className="text-center py-12">
-        <div className="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg p-8 max-w-md mx-auto">
-          <div className="text-6xl mb-4">❌</div>
-          <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-4">
-            데이터를 불러올 수 없습니다
-          </h3>
-          <p className="text-red-700 dark:text-red-300 mb-6">
-            {error}
-          </p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-          >
-            다시 시도
-          </button>
-        </div>
+      <div className="border dark:border-gray-700 rounded-lg bg-red-50 dark:bg-red-900/20">
+        <LoadError message={error} onRetry={handleRetry} />
       </div>
     );
   }
 
   if (products.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <div className="bg-yellow-50 dark:bg-yellow-900 border border-yellow-200 dark:border-yellow-700 rounded-lg p-8 max-w-2xl mx-auto">
-          <h3 className="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mb-4">
-            상품 데이터가 준비되지 않았습니다
-          </h3>
-          <p className="text-yellow-700 dark:text-yellow-300 mb-6">
-            Supabase 데이터베이스에 상품 테이블을 생성하고 샘플 데이터를 추가해야 합니다.
-          </p>
-          <p className="text-sm text-blue-800 dark:text-blue-200">
-            <strong>SQL 실행 가이드:</strong> docs/ADMIN_PRODUCT_MANAGEMENT.md 파일을 참고하세요.
-          </p>
+    // 카테고리 필터가 적용된 경우
+    if (category) {
+      return (
+        <div className="border dark:border-gray-700 rounded-lg">
+          <EmptyCategoryProducts
+            category={category}
+            onViewAll={() => {
+              window.location.href = "/";
+            }}
+          />
         </div>
+      );
+    }
+    // 전체 상품이 없는 경우
+    return (
+      <div className="border dark:border-gray-700 rounded-lg">
+        <EmptyProducts onRetry={handleRetry} />
       </div>
     );
   }

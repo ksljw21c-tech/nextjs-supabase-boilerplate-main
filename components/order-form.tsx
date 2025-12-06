@@ -24,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/ui/loading-button";
 import type { ShippingAddress, CreateOrderInput } from "@/types/order";
 
 const orderFormSchema = z.object({
@@ -184,14 +185,15 @@ export default function OrderForm({
           />
         </div>
 
-        <Button
+        <LoadingButton
           type="submit"
           className="w-full"
           size="lg"
-          disabled={isSubmitting}
+          loading={isSubmitting}
+          loadingText="주문 처리 중..."
         >
-          {isSubmitting ? "주문 처리 중..." : "주문하기"}
-        </Button>
+          주문하기
+        </LoadingButton>
       </form>
     </Form>
   );

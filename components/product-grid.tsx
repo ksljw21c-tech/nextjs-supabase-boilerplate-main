@@ -12,6 +12,7 @@
 
 import { Suspense } from "react";
 import type { Product } from "@/types/product";
+import Link from "next/link";
 import ProductCard from "@/components/product-card";
 
 interface ProductGridProps {
@@ -31,10 +32,17 @@ export default function ProductGrid({
 }: ProductGridProps) {
   if (products.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-500 dark:text-gray-400">
-          표시할 상품이 없습니다.
-        </p>
+      <div className="text-center py-16">
+        <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-12 max-w-md mx-auto">
+          <div className="text-6xl mb-4">🛍️</div>
+          <h3 className="text-lg font-semibold mb-2">상품이 없습니다</h3>
+          <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+            현재 표시할 상품이 없습니다. 다른 카테고리를 확인해보세요.
+          </p>
+          <Link href="/" className="text-blue-600 dark:text-blue-400 hover:underline text-sm">
+            전체 상품 보기 →
+          </Link>
+        </div>
       </div>
     );
   }

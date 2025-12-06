@@ -10,6 +10,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/ui/loading-button";
 import { addToCartAction } from "@/actions/cart";
 import type { Product } from "@/types/product";
 
@@ -58,17 +59,15 @@ export default function AddToCartButton({ product }: AddToCartButtonProps) {
   };
 
   return (
-    <Button
+    <LoadingButton
       className="flex-1"
-      disabled={stockStatus === "품절" || isAdding}
+      disabled={stockStatus === "품절"}
       size="lg"
+      loading={isAdding}
+      loadingText="추가 중..."
       onClick={handleAddToCart}
     >
-      {isAdding
-        ? "추가 중..."
-        : stockStatus === "품절"
-        ? "품절"
-        : "장바구니에 담기"}
-    </Button>
+      {stockStatus === "품절" ? "품절" : "장바구니에 담기"}
+    </LoadingButton>
   );
 }

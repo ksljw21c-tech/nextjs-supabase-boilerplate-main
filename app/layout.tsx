@@ -6,6 +6,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import { SyncUserProvider } from "@/components/providers/sync-user-provider";
 import { ErrorBoundary } from "@/components/error-boundary";
+import { SkipToContent } from "@/components/skip-to-content";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -62,8 +63,11 @@ export default function RootLayout({
         >
           <SyncUserProvider>
             <ErrorBoundary>
+              <SkipToContent />
               <Navbar />
-              {children}
+              <div id="main-content">
+                {children}
+              </div>
             </ErrorBoundary>
           </SyncUserProvider>
         </body>

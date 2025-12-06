@@ -9,6 +9,7 @@
 import { Suspense } from "react";
 import { getProducts, getProductCategories } from "@/lib/supabase/queries/products";
 import ProductsSection from "@/components/products-section";
+import { LoadingPage } from "@/components/loading";
 
 interface HomeProps {
   searchParams: Promise<{
@@ -26,15 +27,15 @@ export default async function Home({ searchParams }: HomeProps) {
     <main className="min-h-[calc(100vh-80px)] px-4 py-8 md:px-8 md:py-12">
       <div className="w-full max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
             상품 목록
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600 dark:text-gray-400 text-sm md:text-base">
             최신 상품을 확인해보세요
           </p>
         </div>
 
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<LoadingPage message="상품을 불러오는 중..." />}>
           <ProductsSection category={category} page={page} />
         </Suspense>
 

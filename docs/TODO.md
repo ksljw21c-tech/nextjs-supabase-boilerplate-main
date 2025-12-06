@@ -29,7 +29,7 @@
   - [x] Next.js 프로젝트 셋업 (pnpm, App Router, React 19)
   - [x] Clerk 연동 (로그인/회원가입, 미들웨어 보호)
   - [x] 기본 레이아웃/네비게이션 구성 (`app/layout.tsx`, `components/Navbar.tsx`)
-  - [x] Supabase 프로젝트 연결 및 환경변수 세팅 (`.env.local`)
+  - [x] Supabase 프로젝트 연결 및 환경변수 세팅 (`.local`)
   - [x] DB 스키마 준비: `products`, `cart_items`, `orders`, `order_items` (개발 환경 RLS 비활성화)
   - [x] 마이그레이션 작성/적용 (`supabase/migrations/*`)
 
@@ -58,11 +58,11 @@
   - [x] 주요 버그 수정 및 예외처리 강화
   - [x] Vercel 배포 설정 및 환경변수 구성
 
-- [ ] 공통 작업 & 문서화
-  - [ ] 오류/로딩/비어있는 상태 UI 정비
-  - [ ] 타입 안전성 강화 (Zod + react-hook-form 적용 구간)
-  - [ ] README/PRD 반영, 운영 가이드 업데이트
-  - [ ] 접근성/반응형/다크모드 점검
+- [x] 공통 작업 & 문서화
+  - [x] 오류/로딩/비어있는 상태 UI 정비
+  - [x] 타입 안전성 강화 (Zod + react-hook-form 적용 구간)
+  - [x] README/PRD 반영, 운영 가이드 업데이트
+  - [x] 접근성/반응형/다크모드 점검
 
 - [ ] 환경/리포지토리 기초 세팅
   - [ ] `.gitignore` / `.cursorignore` 정비

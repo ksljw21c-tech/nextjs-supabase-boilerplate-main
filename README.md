@@ -8,13 +8,14 @@
     <img src="https://img.shields.io/badge/-Tailwind_v4-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="tailwind" />
     <img src="https://img.shields.io/badge/-Clerk-6C47FF?style=for-the-badge&logoColor=white&logo=clerk" alt="clerk" />
     <img src="https://img.shields.io/badge/-Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="supabase" />
+    <img src="https://img.shields.io/badge/-Toss_Payments-0066FF?style=for-the-badge&logoColor=white" alt="toss payments" />
   </div>
 
-  <h1 align="center">SaaS 템플릿</h1>
-  <h3 align="center">Next.js 15 + Clerk + Supabase</h3>
+  <h1 align="center">🛍️ 의류 쇼핑몰 MVP</h1>
+  <h3 align="center">Next.js 15 + Clerk + Supabase + Toss Payments</h3>
 
   <p align="center">
-    프로덕션 레디 SaaS 애플리케이션을 위한 풀스택 보일러플레이트
+    실동작 결제 기능이 포함된 프로덕션 레디 쇼핑몰 애플리케이션
   </p>
 </div>
 
@@ -71,31 +72,55 @@ Next.js 15, Clerk, Supabase를 활용한 모던 SaaS 애플리케이션 템플�
 
 ## 주요 기능
 
+### 🛍️ 상품 관리
+- **상품 목록**: 카테고리별 필터링, 페이지네이션, 검색
+- **상품 상세**: 이미지, 가격, 재고, 설명 표시
+- **반응형 디자인**: 모바일/태블릿/데스크톱 최적화
+
+### 🛒 장바구니 시스템
+- **장바구니 담기**: 상품 상세 페이지에서 수량 선택
+- **장바구니 관리**: 수량 변경, 상품 삭제
+- **실시간 업데이트**: 장바구니 아이콘에 수량 표시
+- **데이터 지속성**: Supabase에 안전하게 저장
+
+### 💳 결제 시스템
+- **Toss Payments 연동**: 실제 결제 기능 (테스트 모드)
+- **결제 위젯**: 직관적인 결제 인터페이스
+- **결제 상태 관리**: 성공/실패/취소 처리
+- **주문 연동**: 결제 완료 시 주문 자동 생성
+
+### 📦 주문 관리
+- **주문 생성**: 배송 주소 및 메모 입력
+- **주문 내역**: 마이페이지에서 주문 목록 조회
+- **주문 상세**: 상품 목록, 배송 정보, 결제 상태 확인
+- **주문 상태 추적**: 대기/확인/배송중/배송완료/취소
+
 ### 🔐 인증 시스템
-- Clerk를 통한 안전한 사용자 인증
-- 소셜 로그인 지원 (Google 등)
-- Clerk 사용자 자동으로 Supabase DB에 동기화
-- 한국어 UI 지원
+- **Clerk 통합**: 안전한 사용자 인증
+- **소셜 로그인**: Google, 이메일 등 다중 로그인 방식
+- **자동 동기화**: Clerk 사용자를 Supabase에 자동 저장
+- **한국어 지원**: 모든 UI 컴포넌트 한국어화
 
 ### 🗄️ 데이터베이스 통합
-- Clerk 토큰 기반 Supabase 인증 (JWT 템플릿 불필요)
-- 환경별 Supabase 클라이언트 분리:
+- **Clerk + Supabase 네이티브 통합**: 2025년 최신 방식
+- **환경별 클라이언트 분리**:
   - Client Component용 (`useClerkSupabaseClient`)
   - Server Component용 (`createClerkSupabaseClient`)
   - 관리자 권한용 (`createServiceRoleClient`)
-- SQL 마이그레이션 시스템
+- **SQL 마이그레이션**: 체계적인 데이터베이스 관리
 
 ### 🎨 UI/UX
-- shadcn/ui 기반 모던 컴포넌트
-- 완전한 반응형 디자인
-- 다크/라이트 모드 지원 가능
-- 접근성 준수 (WCAG)
+- **shadcn/ui 컴포넌트**: 모던하고 일관된 디자인
+- **완전한 반응형**: 모든 디바이스에서 최적 경험
+- **로딩 상태**: 스켈레톤 UI와 진행 표시기
+- **에러 처리**: 사용자 친화적인 에러 메시지
+- **접근성**: WCAG 준수, 키보드 네비게이션 지원
 
 ### 🏗️ 아키텍처
-- Server Actions 우선 사용
-- 타입 안전성 보장
-- 모듈화된 코드 구조
-- Next.js 15 최신 패턴 적용
+- **Server Actions 우선**: API Routes 대신 Server Actions 사용
+- **타입 안전성**: TypeScript + Zod 스키마 검증
+- **모듈화**: 관심사 분리와 재사용성
+- **Next.js 15 최신 패턴**: App Router, Server Components 활용
 
 ## 시작하기
 
@@ -308,9 +333,29 @@ pnpm lint
 
 ### Vercel CLI로 배포
 
-이 프로젝트는 Vercel CLI를 사용하여 배포할 수 있습니다.
+이 프로젝트는 **실제 쇼핑몰 기능**이 포함된 프로덕션 레디 애플리케이션입니다.
 
-**빠른 배포:**
+#### 배포 전 필수 작업
+
+**1. Supabase 데이터베이스 설정**
+```bash
+# Supabase Dashboard에서 SQL 실행
+# 파일: supabase/migrations/db.sql
+```
+
+**2. 환경변수 설정**
+```bash
+# .env 파일에 실제 API 키들 설정
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_...
+CLERK_SECRET_KEY=sk_live_...
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIs...
+NEXT_PUBLIC_TOSSPAYMENTS_CLIENT_KEY=test_ck_...
+TOSSPAYMENTS_SECRET_KEY=test_sk_...
+```
+
+#### Vercel 배포 실행
 
 ```bash
 # 1. Vercel CLI 설치 (한 번만)
@@ -319,19 +364,25 @@ pnpm add -g vercel
 # 2. Vercel 로그인
 vercel login
 
-# 3. 프로젝트 배포
-vercel
+# 3. 프로젝트 연결 (한 번만)
+vercel link
 
-# 4. 프로덕션 배포
+# 4. 환경변수 설정
+vercel env add NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+vercel env add CLERK_SECRET_KEY
+# ... 다른 환경변수들도 추가
+
+# 5. 프로덕션 배포
 vercel --prod
 ```
 
-**환경 변수 설정:**
+#### 배포 후 확인사항
 
-배포 전에 Vercel 대시보드에서 다음 환경 변수들을 설정해야 합니다:
-
-- Clerk: `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY` 등
-- Supabase: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` 등
+- ✅ 상품 목록 정상 표시
+- ✅ Clerk 로그인 작동
+- ✅ 장바구니 기능 작동
+- ✅ Toss Payments 결제 위젯 로드
+- ✅ 주문 생성 및 조회 가능
 
 자세한 배포 가이드는 [`docs/VERCEL_DEPLOYMENT.md`](docs/VERCEL_DEPLOYMENT.md)를 참고하세요.
 
@@ -393,60 +444,186 @@ Clerk에서 추가 로그인 방식을 활성화하려면:
 ## 프로젝트 구조
 
 ```
-saas-template/
-├── app/                    # Next.js App Router
-│   ├── api/               # API Routes
-│   │   └── sync-user/    # Clerk → Supabase 사용자 동기화
-│   ├── auth-test/        # 인증 테스트 페이지
-│   ├── storage-test/     # 스토리지 테스트 페이지
-│   └── integration-test/ # Clerk + Supabase 통합 테스트 페이지
-│   ├── layout.tsx        # Root Layout (Clerk Provider)
-│   ├── page.tsx          # 홈페이지
-│   └── globals.css       # 전역 스타일 (Tailwind v4 설정)
+shopping-mall-mvp/
+├── app/                          # Next.js App Router
+│   ├── api/                     # API Routes
+│   │   ├── payments/           # Toss Payments 콜백
+│   │   └── products/           # 상품 데이터 API
+│   ├── auth-test/              # 인증 테스트 페이지
+│   ├── cart/                   # 장바구니 페이지
+│   ├── checkout/               # 결제 페이지
+│   ├── my-orders/              # 마이페이지 (주문 내역)
+│   ├── orders/[id]/            # 주문 상세 페이지
+│   ├── products/[id]/          # 상품 상세 페이지
+│   ├── layout.tsx              # Root Layout (Clerk + 에러 바운더리)
+│   ├── page.tsx                # 홈페이지 (상품 목록)
+│   └── globals.css             # Tailwind CSS 설정
 │
-├── components/            # React 컴포넌트
-│   ├── ui/               # shadcn/ui 컴포넌트 (자동 생성)
-│   ├── providers/        # Context Providers
-│   │   └── sync-user-provider.tsx
-│   └── Navbar.tsx        # 네비게이션 바
+├── components/                  # React 컴포넌트
+│   ├── ui/                     # shadcn/ui 컴포넌트
+│   │   ├── button.tsx
+│   │   ├── card.tsx
+│   │   ├── form.tsx
+│   │   └── ...
+│   ├── error-boundary.tsx      # 에러 바운더리
+│   ├── loading.tsx             # 로딩 컴포넌트들
+│   ├── navbar.tsx              # 네비게이션 바
+│   ├── product-card.tsx        # 상품 카드
+│   ├── product-grid.tsx        # 상품 그리드
+│   ├── cart-sidebar.tsx        # 장바구니 사이드바
+│   ├── checkout-client.tsx     # 결제 클라이언트
+│   └── ...
 │
-├── lib/                   # 유틸리티 및 설정
-│   ├── supabase/         # Supabase 클라이언트들
-│   │   ├── clerk-client.ts    # Client Component용
-│   │   ├── server.ts          # Server Component용
-│   │   ├── service-role.ts    # 관리자용
-│   │   └── client.ts          # 공개 데이터용
-│   └── utils.ts          # 공통 유틸리티 (cn 함수 등)
+├── lib/                        # 유틸리티 및 설정
+│   ├── supabase/               # Supabase 클라이언트들
+│   │   ├── clerk-client.ts     # Client Component용
+│   │   ├── server.ts           # Server Component용
+│   │   ├── service-role.ts     # 관리자용
+│   │   └── client.ts           # 공개 데이터용
+│   ├── schemas/                # Zod 스키마
+│   │   ├── product.ts
+│   │   ├── cart.ts
+│   │   └── order.ts
+│   └── utils.ts                # 공통 유틸리티
 │
-├── hooks/                 # Custom React Hooks
-│   └── use-sync-user.ts  # 사용자 동기화 훅
+├── actions/                    # Server Actions
+│   ├── cart.ts                 # 장바구니 액션
+│   └── orders.ts               # 주문 액션
 │
-├── supabase/             # Supabase 관련 파일
-│   ├── migrations/       # 데이터베이스 마이그레이션
-│   │   └── schema.sql   # 초기 스키마
-│   └── config.toml       # Supabase 프로젝트 설정
+├── types/                      # TypeScript 타입 정의
+│   ├── product.ts
+│   ├── cart.ts
+│   └── order.ts
 │
-├── .cursor/              # Cursor AI 규칙
-│   └── rules/           # 개발 컨벤션 및 가이드
+├── supabase/                   # 데이터베이스
+│   └── migrations/
+│       └── db.sql             # 전체 스키마
 │
-├── middleware.ts         # Next.js 미들웨어 (Clerk)
-├── .env.example         # 환경 변수 예시
-└── CLAUDE.md            # AI 에이전트용 프로젝트 가이드
+├── docs/                       # 문서화
+│   ├── TODO.md                # 작업 현황
+│   ├── VERCEL_DEPLOYMENT.md   # 배포 가이드
+│   └── PHASE5_MY_PAGE.md      # 마이페이지 구현 문서
+│
+├── middleware.ts               # Clerk 미들웨어
+├── .env.example               # 환경변수 예시
+└── README.md                  # 프로젝트 설명
 ```
 
-### 주요 파일 설명
+### 주요 기능별 파일 설명
 
-- **`middleware.ts`**: Clerk 인증 미들웨어 설정
-- **`app/layout.tsx`**: ClerkProvider와 SyncUserProvider 설정
-- **`lib/supabase/`**: 환경별 Supabase 클라이언트 (매우 중요!)
-- **`hooks/use-sync-user.ts`**: Clerk 사용자를 Supabase에 자동 동기화
-- **`components/providers/sync-user-provider.tsx`**: 앱 전역에서 사용자 동기화 실행
-- **`CLAUDE.md`**: Claude Code를 위한 프로젝트 가이드
+#### 🛍️ 상품 관련
+- **`app/page.tsx`**: 상품 목록 페이지
+- **`app/products/[id]/page.tsx`**: 상품 상세 페이지
+- **`components/product-card.tsx`**: 상품 카드 컴포넌트
+- **`lib/supabase/queries/products.ts`**: 상품 데이터 쿼리
+
+#### 🛒 장바구니 관련
+- **`app/cart/page.tsx`**: 장바구니 페이지
+- **`components/cart-sidebar.tsx`**: 장바구니 사이드바
+- **`actions/cart.ts`**: 장바구니 Server Actions
+- **`lib/supabase/queries/cart.ts`**: 장바구니 데이터 쿼리
+
+#### 💳 결제 관련
+- **`app/checkout/page.tsx`**: 결제 페이지
+- **`components/checkout-client.tsx`**: 결제 클라이언트
+- **`components/payment-widget.tsx`**: Toss Payments 위젯
+- **`app/api/payments/`**: 결제 콜백 API
+
+#### 📦 주문 관련
+- **`app/my-orders/page.tsx`**: 주문 내역 페이지
+- **`app/orders/[id]/page.tsx`**: 주문 상세 페이지
+- **`actions/orders.ts`**: 주문 Server Actions
+- **`lib/supabase/queries/orders.ts`**: 주문 데이터 쿼리
+
+#### 🔐 인증 관련
+- **`middleware.ts`**: Clerk 인증 미들웨어
+- **`app/layout.tsx`**: Clerk Provider 설정
+- **`hooks/use-sync-user.ts`**: 사용자 동기화
+
+#### 🏗️ 아키텍처 관련
+- **`components/error-boundary.tsx`**: 에러 바운더리
+- **`components/loading.tsx`**: 로딩 컴포넌트들
+- **`lib/schemas/`**: Zod 스키마 검증
+- **`lib/supabase/`**: 환경별 Supabase 클라이언트
+
+## 🚀 시작하기
+
+### 빠른 실행
+```bash
+# 1. 의존성 설치
+pnpm install
+
+# 2. 환경변수 설정
+cp .env.example .env
+# .env 파일에 실제 API 키들 입력
+
+# 3. Supabase에서 SQL 실행
+# supabase/migrations/db.sql 파일을 Supabase Dashboard에서 실행
+
+# 4. 개발 서버 실행
+pnpm dev
+```
+
+### 테스트 페이지
+- **`/`**: 상품 목록 (홈페이지)
+- **`/cart`**: 장바구니
+- **`/checkout`**: 결제 페이지
+- **`/my-orders`**: 주문 내역
+- **`/products/[id]`**: 상품 상세
+- **`/orders/[id]`**: 주문 상세
+
+## 📋 구현된 기능 체크리스트
+
+### ✅ Phase 1: 기본 인프라
+- Clerk + Supabase 네이티브 통합
+- 한국어 UI 지원
+- 타입 안전성 보장
+
+### ✅ Phase 2: 상품 기능
+- 상품 목록 (필터링, 페이지네이션)
+- 상품 상세 페이지
+- 반응형 디자인
+
+### ✅ Phase 3: 장바구니 & 주문
+- 장바구니 담기/삭제/수량 변경
+- 주문 생성 및 관리
+- 데이터베이스 연동
+
+### ✅ Phase 4: 결제 통합
+- Toss Payments 위젯 연동
+- 결제 성공/실패 처리
+- 주문 상태 업데이트
+
+### ✅ Phase 5: 마이페이지
+- 주문 내역 목록 조회
+- 주문 상세 보기
+
+### ✅ Phase 6: 테스트 & 배포 준비
+- E2E 플로우 검증
+- 에러 처리 강화
+- Vercel 배포 설정
+
+### ✅ Phase 7: 마무리 작업
+- 오류/로딩/빈 상태 UI 정비
+- 타입 안전성 강화 (Zod 적용)
+- README/PRD 반영
+- 접근성/반응형/다크모드 지원
 
 ## 추가 리소스
 
 - [Next.js 15 문서](https://nextjs.org/docs)
 - [Clerk 문서](https://clerk.com/docs)
 - [Supabase 문서](https://supabase.com/docs)
+- [Toss Payments 개발자 센터](https://developers.tosspayments.com/)
 - [shadcn/ui 문서](https://ui.shadcn.com/)
-- [Tailwind CSS v4 문서](https://tailwindcss.com/docs)
+- [Tailwind CSS 문서](https://tailwindcss.com/docs)
+- [React Hook Form](https://react-hook-form.com/)
+- [Zod 문서](https://zod.dev/)
+
+---
+
+## 📞 문의 및 지원
+
+이 프로젝트에 대한 질문이나 개선 제안이 있으시면 이슈를 생성해주세요.
+
+**Happy Shopping! 🛍️✨**

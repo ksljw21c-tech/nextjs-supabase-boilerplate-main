@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import CartIcon from "@/components/cart-icon";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const Navbar = () => {
   return (
@@ -10,14 +11,15 @@ const Navbar = () => {
       <Link href="/" className="text-2xl font-bold">
         SaaS Template
       </Link>
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-2 md:gap-4 items-center">
+        <ThemeToggle />
         <SignedOut>
           <SignInButton mode="modal">
             <Button>로그인</Button>
           </SignInButton>
         </SignedOut>
         <SignedIn>
-          <Link href="/my-orders">
+          <Link href="/my-orders" className="hidden sm:block">
             <Button variant="ghost">주문내역</Button>
           </Link>
           <CartIcon />

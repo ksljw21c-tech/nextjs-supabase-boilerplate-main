@@ -43,7 +43,12 @@ export default function CartIcon() {
 
   return (
     <CartSidebar>
-      <Button variant="ghost" size="icon" className="relative">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="relative"
+        aria-label={`장바구니 ${itemCount > 0 ? `, ${itemCount}개의 상품` : ', 비어있음'}`}
+      >
         <ShoppingCart className="h-5 w-5" />
         {!isLoading && itemCount > 0 && (
           <Badge
