@@ -1,3 +1,25 @@
-node_modules
-.next
-out
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Build
+.next/
+out/
+build/
+.turbo/
+
+# Cache
+.cache/
+*.tsbuildinfo
+
+# Generated
+next-env.d.ts
+.vercel/
+
+# Misc
+*.md
+*.svg
+*.ico
+public/

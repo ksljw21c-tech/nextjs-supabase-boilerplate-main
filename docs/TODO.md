@@ -64,8 +64,8 @@
   - [x] README/PRD 반영, 운영 가이드 업데이트
   - [x] 접근성/반응형/다크모드 점검
 
-- [ ] 환경/리포지토리 기초 세팅
-  - [ ] `.gitignore` / `.cursorignore` 정비
-  - [ ] `eslint.config.mjs` / 포맷터 설정 확정
-  - [ ] 아이콘/OG 이미지/파비콘 추가 (`public/`)
-  - [ ] SEO 관련 파일 (`robots.ts`, `sitemap.ts`, `manifest.ts`)
+- [x] 환경/리포지토리 기초 세팅
+  - [x] `.gitignore` / `.cursorignore` 정비
+  - [x] `eslint.config.mjs` / 포맷터 설정 확정
+  - [x] 아이콘/OG 이미지/파비콘 추가 (`public/`)
+  - [x] SEO 관련 파일 (`robots.ts`, `sitemap.ts`, `manifest.ts`)

@@ -20,8 +20,44 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SaaS 템플릿",
-  description: "Next.js + Clerk + Supabase 보일러플레이트",
+  title: {
+    default: "의류 쇼핑몰 | Next.js + Clerk + Supabase",
+    template: "%s | 의류 쇼핑몰",
+  },
+  description:
+    "Next.js 15, React 19, Clerk, Supabase, Toss Payments를 활용한 모던 쇼핑몰 애플리케이션",
+  keywords: [
+    "쇼핑몰",
+    "의류",
+    "패션",
+    "Next.js",
+    "React",
+    "Clerk",
+    "Supabase",
+    "Toss Payments",
+  ],
+  authors: [{ name: "개발자" }],
+  creator: "개발자",
+  publisher: "개발자",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+  ),
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    siteName: "의류 쇼핑몰",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
 };
 
 /**
