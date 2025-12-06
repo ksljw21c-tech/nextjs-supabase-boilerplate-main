@@ -2,7 +2,7 @@
  * @file components/theme-toggle.tsx
  * @description 다크모드/라이트모드 토글 컴포넌트
  *
- * 시스템 설정을 따르거나 수동으로 테마를 변경할 수 있는 버튼
+ * 모던한 디자인의 테마 토글 버튼
  */
 
 "use client";
@@ -66,7 +66,13 @@ export function ThemeToggle() {
   // 서버 렌더링 중에는 아무것도 표시하지 않음 (hydration mismatch 방지)
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon" aria-label="테마 변경" disabled>
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        aria-label="테마 변경" 
+        disabled
+        className="rounded-full w-10 h-10"
+      >
         <Sun className="h-5 w-5" />
       </Button>
     );
@@ -80,44 +86,44 @@ export function ThemeToggle() {
           size="icon"
           aria-label="테마 변경"
           aria-haspopup="menu"
+          className="rounded-full w-10 h-10 hover:bg-primary/10 hover:text-primary transition-all duration-300"
         >
           {theme === "dark" ? (
-            <Moon className="h-5 w-5" />
+            <Moon className="h-5 w-5 transition-transform duration-300 hover:rotate-12" />
           ) : theme === "light" ? (
-            <Sun className="h-5 w-5" />
+            <Sun className="h-5 w-5 transition-transform duration-300 hover:rotate-45" />
           ) : (
             <Monitor className="h-5 w-5" />
           )}
           <span className="sr-only">테마 변경</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="glass-card border-border/50 rounded-xl p-1">
         <DropdownMenuItem 
           onClick={() => handleThemeChange("light")}
-          className="cursor-pointer"
+          className="cursor-pointer rounded-lg hover:bg-primary/10 hover:text-primary transition-colors"
         >
-          <Sun className="mr-2 h-4 w-4" />
-          <span>라이트</span>
-          {theme === "light" && <span className="ml-auto">✓</span>}
+          <Sun className="mr-2 h-4 w-4 text-chart-5" />
+          <span className="font-medium">라이트</span>
+          {theme === "light" && <span className="ml-auto text-primary">✓</span>}
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={() => handleThemeChange("dark")}
-          className="cursor-pointer"
+          className="cursor-pointer rounded-lg hover:bg-primary/10 hover:text-primary transition-colors"
         >
-          <Moon className="mr-2 h-4 w-4" />
-          <span>다크</span>
-          {theme === "dark" && <span className="ml-auto">✓</span>}
+          <Moon className="mr-2 h-4 w-4 text-chart-2" />
+          <span className="font-medium">다크</span>
+          {theme === "dark" && <span className="ml-auto text-primary">✓</span>}
         </DropdownMenuItem>
         <DropdownMenuItem 
           onClick={() => handleThemeChange("system")}
-          className="cursor-pointer"
+          className="cursor-pointer rounded-lg hover:bg-primary/10 hover:text-primary transition-colors"
         >
-          <Monitor className="mr-2 h-4 w-4" />
-          <span>시스템</span>
-          {theme === "system" && <span className="ml-auto">✓</span>}
+          <Monitor className="mr-2 h-4 w-4 text-muted-foreground" />
+          <span className="font-medium">시스템</span>
+          {theme === "system" && <span className="ml-auto text-primary">✓</span>}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
-
